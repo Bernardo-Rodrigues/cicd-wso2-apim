@@ -1,0 +1,103 @@
+pipeline {
+    agent any
+
+    environment {
+        APIM_ENV = "dev"
+        APICTL_HOME = "${WORKSPACE}/apictl/apictl"
+        PATH = "${APICTL_HOME}:${env.PATH}"
+        GIT_CREDS = credentials('gitlab-token')
+    }
+
+    stages {
+        stage('Preparation') {
+            steps {
+                echo "🔧 Preparing environment"
+                sh 'mkdir -p $WORKSPACE/apictl'
+
+                echo "⬇️ Downloading apictl"
+                sh '''
+                    curl -L -o $WORKSPACE/apictl/apictl-4.3.3-linux-amd64.tar.gz https://github.com/wso2/product-apim-tooling/releases/download/v4.3.3/apictl-4.3.3-linux-amd64.tar.gz
+                '''
+
+                echo "📦 Extracting apictl"
+                sh 'tar -xzf $WORKSPACE/apictl/apictl-4.3.3-linux-amd64.tar.gz -C $WORKSPACE/apictl'
+                sh 'ls -la $WORKSPACE/apictl'
+
+                sh 'apictl -h'
+            }
+        }
+
+        stage('Checkout') {
+            steps {
+                sh 'mkdir -p $WORKSPACE/apis'
+                dir('apis') {
+                    deleteDir()
+                    script {
+                        echo "📥 Cloning APIs"
+                         sh '''
+                                git config --global http.sslVerify false
+                                git clone https://$GIT_CREDS_USR:$GIT_CREDS_PSW@gitlab.com/bernardo46-group/jenkins-apictl-pipeline.git -b main .
+                        '''
+
+                        copyArtifacts(
+                            projectName: env.JOB_NAME,
+                            selector: lastSuccessful(),
+                            filter: 'apis/.vcs/vcs_config.yaml',
+                            target: '.vcs',
+                            flatten: true,
+                            optional: true
+                        )
+                        copyArtifacts(
+                            projectName: env.JOB_NAME,
+                            selector: lastSuccessful(),
+                            filter: 'apis/vcs.yaml',
+                            target: '.',
+                            flatten: true,
+                            optional: true
+                        )
+                    }
+                }   
+            }
+        }
+
+        stage('Deploy') {
+            steps {
+                dir('apis') {
+                    script {
+                        sh '''
+                            echo "🔐 Authenticating to APIM"
+                            apictl remove env ${APIM_ENV} || true
+                            apictl add env ${APIM_ENV} --apim https://host.docker.internal:9443
+                            apictl login ${APIM_ENV} -u admin -p admin --insecure
+
+                            echo "📌 Setting repository path"
+                            apictl set --vcs-source-repo-path .
+
+                            echo "🔍 Confirming git HEAD"
+                            git rev-parse HEAD || echo "Invalid git repo"
+                            
+                            echo "🔍 Checking for changes"
+                            apictl vcs status -e ${APIM_ENV} -k --verbose > status.log
+
+                            if grep -q '\\[save\\]' status.log; then
+                                echo "🚀 Deployment needed. Running..."
+                                apictl vcs deploy -e ${APIM_ENV} -k --verbose || {
+                                    echo "⚠️ Deployment failed. No previous revision for rollback."
+                                    exit 0
+                                }
+                            fi
+                        '''
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo "📦 Archiving deploy history"
+            archiveArtifacts artifacts: 'apis/.vcs/vcs_config.yaml', fingerprint: true
+            archiveArtifacts artifacts: 'apis/vcs.yaml', fingerprint: true
+        }
+    }
+}
