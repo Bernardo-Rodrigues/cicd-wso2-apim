@@ -1,0 +1,307 @@
+Started by GitLab push by Bernardo Rodrigues
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE
+[Pipeline] {
+[Pipeline] withCredentials
+Masking supported pattern matches of $GIT_CREDS or $GIT_CREDS_PSW
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Preparation)
+[Pipeline] echo
+🔧 Preparing environment
+[Pipeline] sh
++ mkdir -p /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apictl
+[Pipeline] echo
+⬇️ Downloading apictl
+[Pipeline] sh
++ curl -L -o /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apictl/apictl-4.3.3-linux-amd64.tar.gz https://github.com/wso2/product-apim-tooling/releases/download/v4.3.3/apictl-4.3.3-linux-amd64.tar.gz
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+
+  0     0    0     0    0     0      0      0 --:--:--  0:00:01 --:--:--     0
+  2 12.3M    2  350k    0     0   150k      0  0:01:23  0:00:02  0:01:21  355k
+100 12.3M  100 12.3M    0     0  4352k      0  0:00:02  0:00:02 --:--:-- 8106k
+[Pipeline] echo
+📦 Extracting apictl
+[Pipeline] sh
++ tar -xzf /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apictl/apictl-4.3.3-linux-amd64.tar.gz -C /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apictl
+[Pipeline] sh
++ ls -la /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apictl
+total 25248
+drwxr-xr-x 4 jenkins jenkins     4096 Jul 17 22:33 .
+drwxr-xr-x 6 jenkins jenkins     4096 Jul 28 18:41 ..
+drwxr-xr-x 7 jenkins jenkins     4096 Jul 16 12:49 .git
+drwxr-xr-x 2 jenkins jenkins     4096 May  5 04:21 apictl
+-rw-r--r-- 1 jenkins jenkins 12916575 Jul 28 18:42 apictl-4.3.3-linux-amd64.tar.gz
+-rw-r--r-- 1 jenkins jenkins 12916575 Jul 17 22:33 apictl.tar.gz
+[Pipeline] sh
++ apictl -h
+apictl is a Command Line Tool for Importing and Exporting APIs and Applications between different environments of WSO2 API Manager
+(Dev, Production, Staging, QA etc.) and Managing WSO2 Micro Integrator
+
+Usage:
+  apictl [flags]
+  apictl [command]
+
+Available Commands:
+  add           Add Environment to Config file
+  bundle        Archive any source project artifact to zip format
+  change-status Change Status of an API or API Product
+  delete        Delete an API/APIProduct/Application in an environment
+  export        Export an API/API Product/Application/Policy in an environment
+  gen           Generate deployment directory for VM and K8S operator
+  get           Get APIs/APIProducts/Applications or revisions of a specific API/APIProduct in an environment or Get the Correlation Log Configurations or Get the log level of each API in an environment or Get the environments
+  import        Import an API/API Product/Application to an environment
+  init          Initialize a new project in given path
+  login         Login to an API Manager
+  logout        Logout to from an API Manager
+  remove        Remove an environment
+  mi            Micro Integrator related commands
+  mg            Handle Microgateway related operations
+  secret        Manage sensitive information
+  k8s           Kubernetes mode based commands
+  aws           AWS Api-gateway related commands
+  set           Set configuration parameters, per API log levels or correlation component configurations
+  undeploy      Undeploy an API/API Product revision from a gateway environment
+  vcs           Checks status and deploys projects
+  version       Display Version on current apictl
+  help          Help about any command
+  completion    Generate the autocompletion script for the specified shell
+
+Flags:
+  -h, --help       help for apictl
+  -k, --insecure   Allow connections to SSL endpoints without certs
+      --verbose    Enable verbose mode
+
+Use "apictl [command] --help" for more information about a command.
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] sh
++ mkdir -p /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apis
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apis
+[Pipeline] {
+[Pipeline] deleteDir
+[Pipeline] script
+[Pipeline] {
+[Pipeline] echo
+📥 Cloning APIs
+[Pipeline] sh
++ git config --global http.sslVerify false
++ git clone https://****@gitlab.com/bernardo46-group/jenkins-apictl-pipeline.git -b main .
+Cloning into '.'...
+[Pipeline] copyArtifacts
+Copied 1 artifact from "WSO2_APIS_DEPLOY_PIPELINE" build number 22
+[Pipeline] copyArtifacts
+Copied 1 artifact from "WSO2_APIS_DEPLOY_PIPELINE" build number 22
+[Pipeline] echo
+📄 vcs.yaml after clone:
+[Pipeline] sh
++ cat vcs.yaml
+id: 604d474d-b3bb-4cbd-a55c-7adef19bbe65
+[Pipeline] echo
+📄 vcs_config.yaml after clone:
+[Pipeline] sh
++ cat .vcs/vcs_config.yaml
+repos:
+  604d474d-b3bb-4cbd-a55c-7adef19bbe65:
+    environments:
+      dev:
+        lastAttemptedRev: 18afaa6af2e52bbbbccfe229e9599c001039998f
+        lastSuccessfulRev:
+        - 18afaa6af2e52bbbbccfe229e9599c001039998f
+        - bea346495f76ac784f6e6afef2c8a475b01bc809
+        - ff9f0c023c53f09d56bce0392ecd6a0711880da1
+        failedProjects:
+          API:
+          - type: API
+            absolutePath: /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apis/PizzaShackAPI-1.0.0
+            relativePath: PizzaShackAPI-1.0.0
+            nickName: PizzaShackAPI-1.0.0
+            failedDuringPreviousDeploy: true
+            metaData:
+              name: PizzaShackAPI
+              deploy:
+                import:
+                  update: true
+                  preserveProvider: true
+                  rotateRevision: true
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy)
+[Pipeline] dir
+Running in /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apis
+[Pipeline] {
+[Pipeline] script
+[Pipeline] {
+[Pipeline] sh
++ echo 🔐 Authenticating to APIM
+🔐 Authenticating to APIM
++ apictl remove env dev
+Successfully removed environment 'dev'
+Execute 'apictl add env --help' to see how to add a new environment
++ apictl add env dev --apim https://host.docker.internal:9443
+Default token endpoint 'https://host.docker.internal:9443/oauth2/token' is added as the token endpoint 
+Successfully added environment 'dev'
++ apictl login dev -u admin -p admin --insecure
+Warning: Using --password in CLI is not secure. Use --password-stdin
+Logged into APIM in dev environment
+WARNING: credentials are stored as a plain text in /var/jenkins_home/.wso2apictl.local/keys.json
++ echo 📌 Setting repository path
+📌 Setting repository path
++ apictl set --vcs-source-repo-path .
+VCS source repo path is set to : .
++ apictl set --vcs-config-path .vcs/vcs_config.yaml
+VCS config file path is set to : .vcs/vcs_config.yaml
++ echo 📄 apictl main_config.yaml:
+📄 apictl main_config.yaml:
++ cat /var/jenkins_home/.wso2apictl/main_config.yaml
+config:
+  http_request_timeout: 10000
+  export_directory: /var/jenkins_home/.wso2apictl/exported
+  kubernetes_mode: false
+  token_type: JWT
+  vcs_deletion_enabled: false
+  vcs_config_file_path: .vcs/vcs_config.yaml
+  vcs_source_repo_path: .
+  vcs_deployment_repo_path: ""
+  tls-renegotiation-mode: never
+environments:
+  dev:
+    apim: https://host.docker.internal:9443
+    publisher: ""
+    devportal: ""
+    registration: ""
+    admin: ""
+    token: https://host.docker.internal:9443/oauth2/token
+    mi: ""
+mgw-clusters: {}
++ echo 🔍 Confirming git HEAD
+🔍 Confirming git HEAD
++ git rev-parse HEAD
+135d12dd5800bda6a5e873db3a4dda3107dfdbe6
++ echo 🔍 Checking for changes
+🔍 Checking for changes
++ apictl vcs status -e dev -k --verbose
+Executed ImportExportCLI (apictl) on Mon, 28 Jul 2025 18:43:10 UTC
+[INFO]: Insecure: true
+[INFO]: status called
+Executing command: git rev-parse --show-toplevel
+Output : /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apis
+
+Executing command: git rev-parse --show-toplevel
+Output : /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apis
+
+Executing command: git diff --diff-filter=d --name-only 18afaa6af2e52bbbbccfe229e9599c001039998f
+Output : .gitignore
+PizzaShackAPI-1.0.0/Definitions/swagger.yaml
+
+Total changed files: 2
+1: .gitignore
+2: PizzaShackAPI-1.0.0/Definitions/swagger.yaml
+
++ grep -q \[save\] status.log
++ echo 🚀 Deployment needed. Running...
+🚀 Deployment needed. Running...
++ apictl vcs deploy -e dev -k --verbose
+Executed ImportExportCLI (apictl) on Mon, 28 Jul 2025 18:43:10 UTC
+[INFO]: Insecure: true
+[INFO]: deploy called
+[INFO]: connecting to https://host.docker.internal:9443/oauth2/token
+Changed the current directory to  .
+Executing command: git rev-parse --show-toplevel
+Output : /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apis
+
+Executing command: git rev-parse --show-toplevel
+Output : /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apis
+
+Executing command: git diff --diff-filter=d --name-only 18afaa6af2e52bbbbccfe229e9599c001039998f
+Output : .gitignore
+PizzaShackAPI-1.0.0/Definitions/swagger.yaml
+
+Total changed files: 2
+1: .gitignore
+2: PizzaShackAPI-1.0.0/Definitions/swagger.yaml
+
+Changed the current directory to  .
+Deploying Projects (1)...
+
+APIs (1) ...
+1: PizzaShackAPI-1.0.0: (PizzaShackAPI-1.0.0)
+[INFO]: Resolving for API path...
+[INFO]: API Location: /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apis/PizzaShackAPI-1.0.0
+[INFO]: Creating workspace
+[INFO]: Copying from /var/jenkins_home/workspace/WSO2_APIS_DEPLOY_PIPELINE/apis/PizzaShackAPI-1.0.0 to /tmp/apim1010365808
+[INFO]: Substituting environment variables in API files...
+[INFO]: Creating the project artifact /tmp/project-artifact633588663.zip
+[INFO]: Creating: PizzaShackAPI-1.0.0/
+[INFO]: Creating: PizzaShackAPI-1.0.0/Definitions/
+[INFO]: Creating: PizzaShackAPI-1.0.0/Definitions/swagger.yaml
+[INFO]: Creating: PizzaShackAPI-1.0.0/api.yaml
+[INFO]: Creating: PizzaShackAPI-1.0.0/api_meta.yaml
+[INFO]: Creating: PizzaShackAPI-1.0.0/deployment_environments.yaml
+[INFO]: Import URL: https://host.docker.internal:9443/api/am/publisher/v4/apis/import?overwrite=true&preserveProvider=true&rotateRevision=true
+Response : {"id":"643ab1b2-6513-445b-920e-bf22d9759f06","revision":"65f394bf-9513-406c-b3a5-9d9d94f374cb"}Successfully imported API.
+[INFO]: Deleting /tmp/project-artifact633588663.zip
+[INFO]: Deleting /tmp/apim1010365808/PizzaShackAPI-1.0.0
+Executing command: git rev-parse HEAD
+Output : 135d12dd5800bda6a5e873db3a4dda3107dfdbe6
+
++ echo 📄 vcs.yaml after deploy:
+📄 vcs.yaml after deploy:
++ cat vcs.yaml
+id: 604d474d-b3bb-4cbd-a55c-7adef19bbe65
++ echo 📄 vcs_config.yaml after deploy:
+📄 vcs_config.yaml after deploy:
++ cat .vcs/vcs_config.yaml
+repos:
+  604d474d-b3bb-4cbd-a55c-7adef19bbe65:
+    environments:
+      dev:
+        lastAttemptedRev: 135d12dd5800bda6a5e873db3a4dda3107dfdbe6
+        lastSuccessfulRev:
+        - 135d12dd5800bda6a5e873db3a4dda3107dfdbe6
+        - 18afaa6af2e52bbbbccfe229e9599c001039998f
+        - bea346495f76ac784f6e6afef2c8a475b01bc809
+        - ff9f0c023c53f09d56bce0392ecd6a0711880da1
+        failedProjects: {}
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // dir
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+📦 Archiving deploy history
+[Pipeline] archiveArtifacts
+Archiving artifacts
+Recording fingerprints
+[Pipeline] archiveArtifacts
+Archiving artifacts
+Recording fingerprints
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
