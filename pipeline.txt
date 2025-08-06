@@ -70,8 +70,9 @@ pipeline {
                             apictl add env ${APIM_ENV} --apim https://host.docker.internal:9443
                             apictl login ${APIM_ENV} -u admin -p admin --insecure
 
-                            echo "📌 Setting repository path"
+                            echo "📌 Setting apictl vcs paths"
                             apictl set --vcs-source-repo-path .
+                            apictl set --vcs-config-path .vcs/vcs_config.yaml
 
                             echo "🔍 Confirming git HEAD"
                             git rev-parse HEAD || echo "Invalid git repo"
