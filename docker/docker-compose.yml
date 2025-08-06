@@ -12,18 +12,15 @@ services:
       - jenkins-net
 
   ngrok:
-    image: ngrok/ngrok:latest
+    build: ./ngrok
     container_name: ngrok
     depends_on:
       - jenkins
     command: start --all --config /etc/ngrok.yml
-    volumes:
-      - ./ngrok.yml:/etc/ngrok.yml
     ports:
       - "4040:4040"
     networks:
       - jenkins-net
-
 
 volumes:
   jenkins_home:
