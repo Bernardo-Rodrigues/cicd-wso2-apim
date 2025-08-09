@@ -10,4 +10,4 @@ It demonstrates:
 The pipeline is defined in the `Jenkinsfile` and uses `apictl vcs` for intelligent version tracking and deployment.
 
 👉 For the full explanation and use case, read the article:  
-[Modern Software Delivery: Enabling CI/CD for API Management](<ARTICLE_URL_HERE>)
+[Modern Software Delivery: Enabling CI/CD for API Management](https://medium.com/@bernardolrodrigues/modern-software-delivery-enabling-ci-cd-for-api-management-2143556262d9)
